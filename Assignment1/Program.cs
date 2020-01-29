@@ -20,23 +20,49 @@ namespace Assignment1
 
 
 
-            if (name.Length > 0)
+
+           
+
+            do
             {
+                
 
-                MyMenu(name);
+                if (name.Length > 0)
+                {
+
+                    MyMenu(name);
 
 
-             
+                }
+
+                else
+                {
+                    Console.WriteLine("Please enter your name first:");
+                  
+
+                    // Create a string variable and get user input from the keyboard and store it in the variable
+                    name = Console.ReadLine();
+                    Console.WriteLine("");
+                    Console.WriteLine("");
+                    if (name.Length > 0)
+                    {
+
+                        MyMenu(name);
+
+
+                    }
+
+                }
 
 
 
+            } while (name.Length < 1);
 
-            }
 
-            else
-            {
-                Console.WriteLine("Please enter your name first");
-            }
+           
+            
+            
+            
         }
 
 
@@ -52,7 +78,8 @@ namespace Assignment1
             Console.WriteLine("6) Convert base64 version of name to ASCII ");
             Console.WriteLine("7) Encrypt your name with depth of 20");
             Console.WriteLine("8) Decrypt your name with depth of 20");
-            Console.WriteLine("9) Exit");
+            Console.WriteLine("9) Check All Convertions and Encrypt/Decrypt Your name");
+            Console.WriteLine("10) Exit");
 
             Console.WriteLine("");
             Console.WriteLine("");
@@ -118,7 +145,16 @@ namespace Assignment1
                     MyMenu(name);
 
                     return true;
+
                 case "9":
+
+                    AllInONeConvertor(name);
+                    Console.WriteLine("");
+                    Console.WriteLine("");
+                    MyMenu(name);
+
+                    return true;
+                case "10":
                     return false;
 
                 default:
@@ -265,6 +301,55 @@ namespace Assignment1
             Console.WriteLine($"Base64 decoded {encrypter.Base64} {base64toPlainText}");
 
             return nameDeepDecryptWithCipher;
+        }
+
+
+
+        private static void AllInONeConvertor(String name)
+        {
+
+            BinaryConverter binaryConverter = new BinaryConverter();
+            string binaryValue = binaryConverter.ConvertTo(name);
+            Console.WriteLine($"{name} as Binary: {binaryValue}");
+            Console.WriteLine($"{name} from Binary to ASCII: {binaryConverter.ConvertBinaryToString(binaryValue)}");
+
+            HexadecimalConverter hexadecimalConverter = new HexadecimalConverter();
+            string hexadecimalValue = hexadecimalConverter.ConvertTo(name);
+            Console.WriteLine($"{name} as Hexadecimal: {hexadecimalValue}");
+            Console.WriteLine($"{name} from Hexadecimal to ASCII: {hexadecimalConverter.ConveryFromHexToASCII(hexadecimalValue)}");
+
+            Base64Convertor base64Converter = new Base64Convertor();
+            string base64Value = base64Converter.StringToBase64(name);
+            Console.WriteLine($"{name} as Base64: {base64Value}");
+            Console.WriteLine($"{name} from base64 to ASCII: {base64Converter.Base64ToString(base64Value)}");
+
+            int[] cipher = new[] { 1, 1, 2, 3, 5, 8, 13 }; //Fibonacci Sequence
+            string cipherasString = String.Join(",", cipher.Select(x => x.ToString())); //FOr display
+
+            int encryptionDepth = 20;
+
+            Encrypter encrypter = new Encrypter(name, cipher, encryptionDepth);
+
+            //Single Level Encrytion
+            string nameEncryptWithCipher = Encrypter.EncryptWithCipher(name, cipher);
+            Console.WriteLine($"Encrypted once using the cipher {{{cipherasString}}} {nameEncryptWithCipher}");
+
+            string nameDecryptWithCipher = Encrypter.DecryptWithCipher(nameEncryptWithCipher, cipher);
+            Console.WriteLine($"Decrypted once using the cipher {{{cipherasString}}} {nameDecryptWithCipher}");
+
+            //Deep Encrytion
+            string nameDeepEncryptWithCipher = Encrypter.DeepEncryptWithCipher(name, cipher, encryptionDepth);
+            Console.WriteLine($"Deep Encrypted {encryptionDepth} times using the cipher {{{cipherasString}}} {nameDeepEncryptWithCipher}");
+
+            string nameDeepDecryptWithCipher = Encrypter.DeepDecryptWithCipher(nameDeepEncryptWithCipher, cipher, encryptionDepth);
+            Console.WriteLine($"Deep Decrypted {encryptionDepth} times using the cipher {{{cipherasString}}} {nameDeepDecryptWithCipher}");
+
+            //Base64 Encoded
+            Console.WriteLine($"Base64 encoded {name} {encrypter.Base64}");
+
+            string base64toPlainText = Encrypter.Base64ToString(encrypter.Base64);
+            Console.WriteLine($"Base64 decoded {encrypter.Base64} {base64toPlainText}");
+
         }
     }
 }
